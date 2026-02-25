@@ -1,4 +1,4 @@
-name: Update VPN List
+name: My-Test-UP
 on:
   schedule:
     - cron: '0 * * * *'  # Обновление каждый час
