@@ -1,0 +1,28 @@
+name: Update VPN List
+on:
+  schedule:
+    - cron: '0 * * * *'  # Обновление каждый час
+  workflow_dispatch:      # Кнопка для ручного запуска
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download VPN Gate Data
+        run: |
+          # Используем curl для скачивания списка напрямую с серверов VPN Gate
+          curl -L "https://www.vpngate.net/api/iphone/" -o vpngate.csv
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "VPN-Bot"
+          git config --global user.email "bot@github.com"
+          git add vpngate.csv
+          # Если изменений нет, скрипт просто завершится без ошибки
+          git commit -m "Auto-update: $(date)" || exit 0
+          git push
